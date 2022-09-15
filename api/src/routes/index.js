@@ -55,27 +55,25 @@ const getData = async () => {
 
 router.get("/countries", async (req, res) => {
   if (req.query.name) {
-    const name = req.query.name;
+    try {
+      const name = req.query.name;
+      let countryFound = await axios
+        .get(`https://restcountries.com/v3/name/${name}`)
+        .then((response) =>
+          response.data.map((el) => {
+            return {
+              id: el.cca3,
+              name: el.name.common,
+              image: el.flags[1],
+              continents: el.continents[0],
+            };
+          })
+        );
 
-    /* let countryName = allCountries.find((el) =>
-      el.name.toLowerCase().includes(name.toLowerCase())
-    ); */
-
-    let countryFound = await axios
-      .get(`https://restcountries.com/v3/name/${name}`)
-      .then((response) =>
-        response.data.map((el) => {
-          return {
-            name: el.name.common,
-            image: el.flags[1],
-            continents: el.continents[0],
-          };
-        })
-      );
-
-    countryFound
-      ? res.status(200).send(countryFound)
-      : res.status(404).send("Country not found");
+      countryFound && res.status(200).send(countryFound);
+    } catch (error) {
+      res.status(404).send("Country not found");
+    }
   } else {
     const allCountries = await getData();
     res.status(200).send(allCountries);
@@ -87,7 +85,7 @@ router.get("/countries/:id", async (req, res) => {
     const { id } = req.params;
 
     // FORMA 1 con EndPoint
-    const dataCountry = await axios
+    /* const dataCountry = await axios
       .get(`https://restcountries.com/v3/alpha/${id}`)
       .then((response) =>
         response.data.map((el) => {
@@ -116,7 +114,7 @@ router.get("/countries/:id", async (req, res) => {
     });
 
     const allCountryData = dataCountry.concat(countryActivities);
-
+ */
     // Forma 2, sin codear a las tres de la mañana
     let buscado = await Country.findOne({
       where: { id: id },
@@ -155,6 +153,11 @@ router.post("/activities", async (req, res) => {
   } catch (error) {
     res.status(404).json(error);
   }
+});
+
+router.get("/activities", async (req, res) => {
+  const dbActivities = await Activity.findAll({ include: Country });
+  res.status(200).send(dbActivities);
 });
 
 module.exports = router;
