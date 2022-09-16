@@ -6,12 +6,14 @@ export const SEARCH_COUNTRY = "SEARCH_COUNTRY";
 export const GET_ACTIVITIES = "GET_ACTIVITIES";
 export const CREATE_ACTIVITY = "CREATE_ACTIVITY";
 
-export const getCountries = () => {
+export const getCountries = (state = { sort: "", filter: "" }) => {
   return async (dispatch) => {
     axios
-      .get("http://localhost:3001/countries")
+      .get(`http://localhost:3001/countries?state=${state.filter}`)
       .then((response) => response.data)
-      .then((response) => dispatch({ type: GET_COUNTRIES, payload: response }));
+      .then((response) =>
+        dispatch({ type: GET_COUNTRIES, payload: { response, state } })
+      );
   };
 };
 

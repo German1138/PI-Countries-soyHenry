@@ -10,17 +10,25 @@ import { getActivities, getCountries } from "../Redux/actions";
 
 export default function Home() {
   const dispatch = useDispatch();
+
   const allCountries = useSelector((state) => state.countries);
   const allActivities = useSelector((state) => state.activities);
 
+  let [state, setState] = useState({ sort: "asc", filter: "" });
+
+  const handleChange = (e) => {
+    setState({ ...state, [e.target.name]: e.target.value });
+  };
+
   useEffect(() => {
-    dispatch(getCountries());
+    dispatch(getCountries(state));
     dispatch(getActivities());
-  }, []);
+  }, [state]);
 
   const handleClick = (e) => {
     e.preventDefault();
-    dispatch(getCountries());
+    setState({ sort: "", filter: "" });
+    dispatch(getCountries((state = { sort: "", filter: "" })));
     dispatch(getActivities());
   };
 
@@ -32,19 +40,30 @@ export default function Home() {
       <SearchBar />
 
       <form>
-        <select>
-          <option title="sort" value="asc">
-            Ascendent
-          </option>
-          <option title="sort" value="desc">
-            Descendent
-          </option>
+        <select name="sort" onChange={(e) => handleChange(e)}>
+          <option value="asc">A-Z</option>
+          <option value="desc">Z-A</option>
         </select>
 
-        <select>
+        <select name="sort" onChange={(e) => handleChange(e)}>
+          <option value="most">Most population</option>
+          <option value="least">Least population</option>
+        </select>
+
+        <select name="filter" onChange={(e) => handleChange(e)}>
+          <option value="Africa">Africa</option>
+          <option value="Antarctica">Antarctica</option>
+          <option value="Asia">Asia</option>
+          <option value="Europe">Europe</option>
+          <option value="North America">North America</option>
+          <option value="Oceania">Oceania</option>
+          <option value="South America">South America</option>
+        </select>
+
+        <select name="filter" onChange={(e) => handleChange(e)}>
           {allActivities?.map((el, index) => {
             return (
-              <option key={index} title="filt" value="asc">
+              <option key={index} value={el.name}>
                 {el.name}
               </option>
             );

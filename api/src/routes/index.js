@@ -54,7 +54,20 @@ const getData = async () => {
 };
 
 router.get("/countries", async (req, res) => {
-  if (req.query.name) {
+  if (req.query.state && req.query.state.length) {
+    const aux = req.query.state;
+    const selectedCountries = await Country.findAll({
+      where: { continents: aux },
+    });
+    if (selectedCountries && selectedCountries.length) {
+      res.status(200).send(selectedCountries);
+    } else {
+      let selectedActivity = await Country.findAll({
+        include: { model: Activity, where: { name: aux } },
+      });
+      res.status(200).send(selectedActivity);
+    }
+  } else if (req.query.name && req.query.name.length) {
     try {
       const name = req.query.name;
       let countryFound = await axios

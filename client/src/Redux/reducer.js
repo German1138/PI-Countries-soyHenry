@@ -15,7 +15,45 @@ const initialState = {
 export default function rootReducer(state = initialState, action) {
   switch (action.type) {
     case GET_COUNTRIES:
-      return { ...state, countries: action.payload };
+      if (action.payload.state.sort === "asc") {
+        action.payload.response.sort((a, b) => {
+          let fa = a.name.toLowerCase(),
+            fb = b.name.toLowerCase();
+          if (fa < fb) return -1;
+          if (fa > fb) return 1;
+          return 0;
+        });
+      }
+      if (action.payload.state.sort === "desc") {
+        action.payload.response.sort((a, b) => {
+          let fa = a.name.toLowerCase(),
+            fb = b.name.toLowerCase();
+          if (fa > fb) return -1;
+          if (fa < fb) return 1;
+          return 0;
+        });
+      }
+
+      if (action.payload.state.sort === "most") {
+        action.payload.response.sort((a, b) => {
+          let fa = a.population,
+            fb = b.population;
+          if (fa > fb) return -1;
+          if (fa < fb) return 1;
+          return 0;
+        });
+      }
+      if (action.payload.state.sort === "least") {
+        action.payload.response.sort((a, b) => {
+          let fa = a.population,
+            fb = b.population;
+          if (fa < fb) return -1;
+          if (fa > fb) return 1;
+          return 0;
+        });
+      }
+
+      return { ...state, countries: action.payload.response };
 
     case GET_COUNTRY:
       //console.log(action.payload, "REDUCER country");
