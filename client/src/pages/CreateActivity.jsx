@@ -1,17 +1,20 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useHistory } from "react-router-dom";
 
 import NavBar from "../components/NavBar";
 import SearchBar from "../components/SearchBar";
 
 import { createActivity, getCountries } from "../Redux/actions";
 
+import s from "./CreateActivity.module.css";
+
 export default function CreateActivity() {
   const allCountries = useSelector((state) => state.countries);
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(getCountries());
+    dispatch(getCountries({ sort: "asc", filter: "" }));
   }, []);
 
   const [state, setState] = useState({
@@ -22,13 +25,12 @@ export default function CreateActivity() {
     countries: [],
   });
 
-  const [dur, setDur] = useState([23, "minutes"]);
+  const [dur, setDur] = useState([, "minutes"]);
 
   const handleDuration = (e) => {
     if (e.target.name === "durationA") dur.splice(0, 1, e.target.value);
     if (e.target.name === "durationB") dur.splice(1, 1, e.target.value);
     setState({ ...state, duration: dur.join(" ") });
-    console.log(dur);
   };
 
   const handleChange = (e) => {
@@ -48,9 +50,51 @@ export default function CreateActivity() {
   const handleSubmit = (e) => {
     e.preventDefault();
     //setState({ ...state, countries: checked });
-    //console.table(checked);
-    console.table(state);
-    //dispatch(createActivity(state));
+    console.log(errors);
+    if (!Object.keys(errors).length) {
+      console.table(errors);
+      console.table(state);
+      window.alert("Activity created!");
+      //dispatch(createActivity(state))
+      //e.target.reset();
+    } else {
+      window.alert("Error! Invalid values");
+    }
+  };
+
+  useEffect(() => {
+    setErrors(validationJS(state, dur));
+  }, [state, dur]);
+
+  const [errors, setErrors] = useState({});
+  const pattern = RegExp(/^[a-z ,.'-]+$/i);
+
+  const validationJS = (state, dur) => {
+    const errors = {};
+
+    if (!state.name) errors.name = "Name is required!";
+    if (
+      state.name.length < 3 ||
+      state.name.length > 10 ||
+      !pattern.test(state.name)
+    )
+      errors.name = "Invalid name!";
+
+    if (!dur[0]) errors.duration = "Duration is required!";
+    if (dur[0] <= 0) errors.duration = "Invalid duration!";
+    if (
+      (dur[0] > 60 && dur[1] === "minutes") ||
+      (dur[0] > 23 && dur[1] === "hours") ||
+      (dur[0] > 60 && dur[1] === "days") ||
+      (dur[0] > 8 && dur[1] === "weeks")
+    )
+      errors.duration = "Invalid duration!";
+
+    if (state.countries.length === 0)
+      errors.countries = "Check at least one country!";
+
+    console.log(errors);
+    return errors;
   };
 
   return (
@@ -66,12 +110,14 @@ export default function CreateActivity() {
           <input
             type="text"
             name="name"
-            min="3"
-            max="30"
             placeholder="Rock climbing"
             autoFocus
+            className={errors.name ? s.inputs : s.inputs2}
             onChange={(e) => handleChange(e)}
           />
+          <span className={errors.name ? s.span : null}>
+            {errors.name ? errors.name : "✔️"}
+          </span>
         </div>
 
         <div>
@@ -104,6 +150,9 @@ export default function CreateActivity() {
             <option>days</option>
             <option>weeks</option>
           </select>
+          <span className={s.span}>
+            {errors.duration ? errors.duration : null}
+          </span>
         </div>
 
         <div>
@@ -120,24 +169,35 @@ export default function CreateActivity() {
 
         <div>
           <h3>Countries</h3>
-          {allCountries && allCountries.length
-            ? allCountries.map((el, index) => {
-                return (
-                  <div key={index}>
-                    <input
-                      value={el.id}
-                      type="checkbox"
-                      name="countries"
-                      onChange={(e) => handleChange(e)}
-                    />
-                    <span>{el.name}</span>
-                  </div>
-                );
-              })
-            : "There is no countries"}
+          <span className={s.span}>
+            {errors.countries ? errors.countries : null}
+          </span>
+
+          <div className={s.optionsContainer}>
+            {allCountries && allCountries.length
+              ? allCountries.map((el, index) => {
+                  return (
+                    <div key={index}>
+                      <input
+                        value={el.id}
+                        type="checkbox"
+                        name="countries"
+                        onChange={(e) => handleChange(e)}
+                      />
+                      <span>{el.name}</span>
+                    </div>
+                  );
+                })
+              : "There is no countries"}
+          </div>
         </div>
 
-        <button type="submit">Create activity</button>
+        <button
+          type="submit"
+          disabled={Object.keys(errors).length ? true : false}
+        >
+          Create activity
+        </button>
       </form>
     </>
   );

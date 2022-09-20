@@ -31,9 +31,8 @@ export const searchCountry = (payload) => {
     axios
       .get(`http://localhost:3001/countries?name=${payload}`)
       .then((response) => response.data)
-      .then((response) =>
-        dispatch({ type: SEARCH_COUNTRY, payload: response })
-      );
+      .then((response) => dispatch({ type: SEARCH_COUNTRY, payload: response }))
+      .catch((err) => dispatch({ type: SEARCH_COUNTRY, payload: [] }));
   };
 };
 
@@ -49,6 +48,17 @@ export const getActivities = () => {
 };
 
 export const createActivity = async (payload) => {
-  await axios.post("http://localhost:3001/activities", payload);
-  return { type: CREATE_ACTIVITY, payload: payload };
+  axios
+    .post("http://localhost:3001/activities", payload)
+    .then((response) => {
+      //console.log(response);
+      return response;
+    })
+    .catch((err) => {
+      //console.log(err);
+      return err;
+    });
+  return (dispatch) => {
+    dispatch({ type: CREATE_ACTIVITY, payload: payload });
+  };
 };

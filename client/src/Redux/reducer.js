@@ -57,10 +57,10 @@ export default function rootReducer(state = initialState, action) {
 
     case GET_COUNTRY:
       //console.log(action.payload, "REDUCER country");
-      return { ...state, countries: action.payload };
+      return { ...state, country: action.payload };
 
     case SEARCH_COUNTRY:
-      //console.log(action.payload, "REDUCER SEARCH");
+      console.log(action.payload, "REDUCER SEARCH");
       return { ...state, countries: action.payload };
 
     case GET_ACTIVITIES:

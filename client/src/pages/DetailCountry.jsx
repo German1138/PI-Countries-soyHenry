@@ -8,7 +8,7 @@ import { getCountry } from "../Redux/actions";
 import SearchBar from "../components/SearchBar";
 
 export default function DetailCountry() {
-  const countryDetail = useSelector((state) => state.countries);
+  const countryDetail = useSelector((state) => state.country);
   const { activities } = countryDetail;
 
   const dispatch = useDispatch();

@@ -4,6 +4,7 @@ import { useSelector, useDispatch } from "react-redux";
 
 import Card from "../components/Card";
 import NavBar from "../components/NavBar";
+import Pagination from "../components/Pagination";
 import SearchBar from "../components/SearchBar";
 
 import { getActivities, getCountries } from "../Redux/actions";
@@ -31,6 +32,19 @@ export default function Home() {
     dispatch(getCountries((state = { sort: "", filter: "" })));
     dispatch(getActivities());
   };
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const [postsPerPage, setPostsPerPage] = useState(9);
+
+  const lastPostIndex = currentPage * postsPerPage;
+  const firstPostIndex = lastPostIndex - postsPerPage;
+  const currentPosts = allCountries.slice(firstPostIndex, lastPostIndex);
+
+  /* useEffect(() => {
+    if (currentPage === 1) {
+      setPostsPerPage(9);
+    } else setPostsPerPage(10);
+  }, [currentPage]); */
 
   return (
     <>
@@ -73,8 +87,14 @@ export default function Home() {
 
       <button onClick={(e) => handleClick(e)}>RESET</button>
 
-      {allCountries && allCountries.length ? (
-        allCountries.map((el, index) => {
+      <Pagination
+        totalPosts={allCountries.length}
+        postsPerPage={postsPerPage}
+        setCurrentPage={setCurrentPage}
+      />
+
+      {currentPosts && currentPosts.length ? (
+        currentPosts.map((el, index) => {
           return (
             <Card
               key={index}
