@@ -5,7 +5,8 @@ import { useDispatch, useSelector } from "react-redux";
 
 import NavBar from "../components/NavBar";
 import { getCountry } from "../Redux/actions";
-import SearchBar from "../components/SearchBar";
+
+import s from "./DetailCountry.module.css";
 
 export default function DetailCountry() {
   const countryDetail = useSelector((state) => state.country);
@@ -21,37 +22,49 @@ export default function DetailCountry() {
   return (
     <>
       <NavBar />
-      <SearchBar />
-      <p>ID: {countryDetail.id}</p>
-      <h1>{countryDetail.name}</h1>
-      <img
-        src={countryDetail.image}
-        alt={`Image of ${countryDetail.name}`}
-        width="300px"
-      />
-      <ul>
-        <li>Capital: {countryDetail.capital}</li>
-        <li>Continents: {countryDetail.continents}</li>
-        <li>Subregion: {countryDetail.subregion}</li>
-        <li>Area: {countryDetail.area}km2</li>
-        <li>Population: {countryDetail.population}</li>
-      </ul>
+      <div className={s.grid}>
+        <div className={s.divCountry}>
+          <h1 className={s.h1}>{countryDetail.name}</h1>
+          <img
+            className={s.img}
+            src={countryDetail.image}
+            alt={`Image of ${countryDetail.name}`}
+            width="300px"
+          />
+          <ul className={s.carac}>
+            <li>ID: {countryDetail.id}</li>
+            <li>Capital: {countryDetail.capital}</li>
+            <li>Continents: {countryDetail.continents}</li>
+            <li>Subregion: {countryDetail.subregion}</li>
+            <li>Area: {countryDetail.area}km2</li>
+            <li>Population: {countryDetail.population}</li>
+          </ul>
+        </div>
 
-      <h2>Activities</h2>
-      {activities && activities.length
-        ? activities.map((el, index) => {
-            return (
-              <div key={index}>
-                <h3>{el.name}</h3>
-                <ul>
-                  <li>Season: {el.season}</li>
-                  <li>Duration: {el.duration}</li>
-                  <li>Difficulty: {el.difficulty}</li>
-                </ul>
-              </div>
-            );
-          })
-        : `Right now ${countryDetail.name} has no activities`}
+        <div className={s.containerActivities}>
+          <h2 className={s.h2}>Activities</h2>
+          <div className={s.divActivities}>
+            {activities && activities.length ? (
+              activities.map((el, index) => {
+                return (
+                  <div className={s.divActivity} key={index}>
+                    <h3 className={s.h3}>{el.name}</h3>
+                    <ul>
+                      <li>Season: {el.season}</li>
+                      <li>Duration: {el.duration}</li>
+                      <li>Difficulty: {el.difficulty}</li>
+                    </ul>
+                  </div>
+                );
+              })
+            ) : (
+              <span className={s.span}>
+                Right now {countryDetail.name} has no activities!
+              </span>
+            )}
+          </div>
+        </div>
+      </div>
     </>
   );
 }

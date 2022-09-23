@@ -1,0 +1,36 @@
+.navLink {
+  text-decoration: none;
+  font-weight: bold;
+  font-size: 23px;
+  color: whitesmoke;
+  margin-right: 20px;
+  margin-left: 20px;
+  padding: 10px;
+}
+.navLinkActive {
+  background-color: red;
+  text-decoration: none;
+  font-weight: bold;
+  font-size: 23px;
+  color: whitesmoke;
+  margin-right: 20px;
+  margin-left: 20px;
+  padding: 10px;
+}
+
+.nav {
+  background: #6cc4a1;
+  position: fixed;
+  padding-top: 10px;
+  padding-bottom: 5px;
+  top: 0;
+  left: 0;
+  height: fit-content;
+  width: 100%;
+}
+
+.navLink:hover {
+  color: #6cc4a1;
+  background-color: white;
+  border-radius: 100px;
+}

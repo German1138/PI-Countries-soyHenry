@@ -5,7 +5,8 @@ import { useSelector, useDispatch } from "react-redux";
 import Card from "../components/Card";
 import NavBar from "../components/NavBar";
 import Pagination from "../components/Pagination";
-import SearchBar from "../components/SearchBar";
+
+import s from "./Home.module.css";
 
 import { getActivities, getCountries } from "../Redux/actions";
 
@@ -22,23 +23,37 @@ export default function Home() {
   };
 
   useEffect(() => {
+    console.log(allCountries);
     dispatch(getCountries(state));
+    setCurrentPage(1);
     dispatch(getActivities());
   }, [state]);
 
-  const handleClick = (e) => {
+  const handleReset = (e) => {
     e.preventDefault();
+    setCurrentPage(1);
     setState({ sort: "", filter: "" });
     dispatch(getCountries((state = { sort: "", filter: "" })));
     dispatch(getActivities());
   };
 
-  const [currentPage, setCurrentPage] = useState(1);
-  const [postsPerPage, setPostsPerPage] = useState(9);
+  /* const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log("EL APPLY");
+  }; */
 
+  const [currentPage, setCurrentPage] = useState(1);
+  const [postsPerPage, setPostsPerPage] = useState(10);
+  const [postsOnFirstPage, setPostsOnFirstPage] = useState(9);
+
+  const difference = postsPerPage - postsOnFirstPage;
   const lastPostIndex = currentPage * postsPerPage;
   const firstPostIndex = lastPostIndex - postsPerPage;
-  const currentPosts = allCountries.slice(firstPostIndex, lastPostIndex);
+
+  const currentPosts = allCountries.slice(
+    currentPage === 1 ? firstPostIndex : firstPostIndex - difference,
+    lastPostIndex - difference
+  );
 
   /* useEffect(() => {
     if (currentPage === 1) {
@@ -48,23 +63,46 @@ export default function Home() {
 
   return (
     <>
-      <h1>Homepage</h1>
-
       <NavBar />
-      <SearchBar />
 
-      <form>
-        <select name="sort" onChange={(e) => handleChange(e)}>
+      <h1
+        className={s.h1}
+        onClick={() => {
+          window.location.reload();
+        }}
+      >
+        Homepage
+      </h1>
+      <form
+        className={s.form}
+        onSubmit={(e) => {
+          handleSubmit(e);
+        }}
+      >
+        <select
+          className={s.select}
+          name="sort"
+          onChange={(e) => handleChange(e)}
+        >
           <option value="asc">A-Z</option>
           <option value="desc">Z-A</option>
         </select>
 
-        <select name="sort" onChange={(e) => handleChange(e)}>
+        <select
+          className={s.select}
+          name="sort"
+          onChange={(e) => handleChange(e)}
+        >
           <option value="most">Most population</option>
           <option value="least">Least population</option>
         </select>
 
-        <select name="filter" onChange={(e) => handleChange(e)}>
+        <select
+          className={s.select}
+          name="filter"
+          onChange={(e) => handleChange(e)}
+        >
+          <option value="">All continents</option>
           <option value="Africa">Africa</option>
           <option value="Antarctica">Antarctica</option>
           <option value="Asia">Asia</option>
@@ -74,7 +112,12 @@ export default function Home() {
           <option value="South America">South America</option>
         </select>
 
-        <select name="filter" onChange={(e) => handleChange(e)}>
+        <select
+          className={s.select}
+          name="filter"
+          onChange={(e) => handleChange(e)}
+        >
+          <option value="">---</option>
           {allActivities?.map((el, index) => {
             return (
               <option key={index} value={el.name}>
@@ -83,31 +126,36 @@ export default function Home() {
             );
           })}
         </select>
+        {/* <button className={s.select} type="submit">
+          APPLY
+        </button> */}
+        <button className={s.select} onClick={(e) => handleReset(e)}>
+          RESET
+        </button>
       </form>
-
-      <button onClick={(e) => handleClick(e)}>RESET</button>
 
       <Pagination
         totalPosts={allCountries.length}
         postsPerPage={postsPerPage}
         setCurrentPage={setCurrentPage}
       />
-
-      {currentPosts && currentPosts.length ? (
-        currentPosts.map((el, index) => {
-          return (
-            <Card
-              key={index}
-              id={el.id}
-              name={el.name}
-              image={el.image}
-              continents={el.continents}
-            />
-          );
-        })
-      ) : (
-        <h3>404 not found</h3>
-      )}
+      <div className={s.grid}>
+        {currentPosts && currentPosts.length ? (
+          currentPosts.map((el, index) => {
+            return (
+              <Card
+                key={index}
+                id={el.id}
+                name={el.name}
+                image={el.image}
+                continents={el.continents}
+              />
+            );
+          })
+        ) : (
+          <h3 className={s.h3}>404 not found</h3>
+        )}
+      </div>
     </>
   );
 }

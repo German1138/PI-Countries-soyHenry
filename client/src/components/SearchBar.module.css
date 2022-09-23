@@ -1,0 +1,31 @@
+.div {
+  display: inline-block;
+  width: fit-content;
+  margin-left: 20px;
+}
+
+.input {
+  padding: 10px;
+  border-radius: 100px;
+  border: none;
+  outline: none;
+}
+
+.btn {
+  border: none;
+  border-radius: 100px;
+  text-decoration: none;
+  padding: 10px;
+  margin-left: 5px;
+  cursor: pointer;
+}
+
+.navLink {
+  text-decoration: none;
+  color: black;
+}
+
+.img {
+  height: auto;
+  width: 10px;
+}

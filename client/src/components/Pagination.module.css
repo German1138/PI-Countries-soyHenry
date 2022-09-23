@@ -1,0 +1,19 @@
+.container {
+  display: flex;
+  justify-content: center;
+}
+
+.btns {
+  border: solid 2px #6cc4a1;
+  border-radius: 5px;
+  margin: 5px 5px 0px 5px;
+  cursor: pointer;
+  padding: 5px;
+  width: 30px;
+  background-color: whitesmoke;
+  font-weight: bold;
+}
+
+.btns:hover {
+  background-color: #6cc4a1;
+}

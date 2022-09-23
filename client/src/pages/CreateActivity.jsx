@@ -3,7 +3,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 
 import NavBar from "../components/NavBar";
-import SearchBar from "../components/SearchBar";
 
 import { createActivity, getCountries } from "../Redux/actions";
 
@@ -12,6 +11,8 @@ import s from "./CreateActivity.module.css";
 export default function CreateActivity() {
   const allCountries = useSelector((state) => state.countries);
   const dispatch = useDispatch();
+
+  let history = useHistory();
 
   useEffect(() => {
     dispatch(getCountries({ sort: "asc", filter: "" }));
@@ -49,14 +50,12 @@ export default function CreateActivity() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    //setState({ ...state, countries: checked });
     console.log(errors);
     if (!Object.keys(errors).length) {
-      console.table(errors);
       console.table(state);
-      window.alert("Activity created!");
-      //dispatch(createActivity(state))
-      //e.target.reset();
+      //window.alert("Activity created!");
+      dispatch(createActivity(state));
+      e.target.reset();
     } else {
       window.alert("Error! Invalid values");
     }
@@ -67,7 +66,8 @@ export default function CreateActivity() {
   }, [state, dur]);
 
   const [errors, setErrors] = useState({});
-  const pattern = RegExp(/^[a-z ,.'-]+$/i);
+  const patternOWords = RegExp(/^[a-z ,.'-]+$/i);
+  const patternONumbers = RegExp(/^\d+$/);
 
   const validationJS = (state, dur) => {
     const errors = {};
@@ -76,12 +76,13 @@ export default function CreateActivity() {
     if (
       state.name.length < 3 ||
       state.name.length > 10 ||
-      !pattern.test(state.name)
+      !patternOWords.test(state.name)
     )
       errors.name = "Invalid name!";
 
     if (!dur[0]) errors.duration = "Duration is required!";
-    if (dur[0] <= 0) errors.duration = "Invalid duration!";
+    if (dur[0] <= 0 || !patternONumbers.test(dur[0]))
+      errors.duration = "Invalid duration!";
     if (
       (dur[0] > 60 && dur[1] === "minutes") ||
       (dur[0] > 23 && dur[1] === "hours") ||
@@ -93,87 +94,107 @@ export default function CreateActivity() {
     if (state.countries.length === 0)
       errors.countries = "Check at least one country!";
 
-    console.log(errors);
+    //console.log(errors);
     return errors;
   };
 
   return (
     <>
-      <h1>Create activity</h1>
-
       <NavBar />
-      <SearchBar />
 
-      <form onSubmit={(e) => handleSubmit(e)}>
+      {/* <h1 className={s.h1}>Create activity</h1> */}
+      <form className={s.grid} onSubmit={(e) => handleSubmit(e)}>
         <div>
-          <h3>Activity Name</h3>
-          <input
-            type="text"
-            name="name"
-            placeholder="Rock climbing"
-            autoFocus
-            className={errors.name ? s.inputs : s.inputs2}
-            onChange={(e) => handleChange(e)}
-          />
-          <span className={errors.name ? s.span : null}>
-            {errors.name ? errors.name : "✔️"}
-          </span>
-        </div>
+          <div>
+            <h3 className={s.h3}>Activity Name</h3>
+            <input
+              type="text"
+              name="name"
+              placeholder="Rock climbing"
+              autoFocus
+              className={errors.name ? s.inputNameF : s.inputNameT}
+              onChange={(e) => handleChange(e)}
+            />
+            <span className={errors.name ? s.validF : s.validT}>
+              {errors.name ? errors.name : "✔️"}
+            </span>
+          </div>
 
-        <div>
-          <h3>Season</h3>
-          <select name="season" onChange={(e) => handleChange(e)}>
-            <option title="summer">Summer</option>
-            <option title="fall">Fall</option>
-            <option title="winter">Winter</option>
-            <option title="spring">Spring</option>
-          </select>
-        </div>
+          <div>
+            <h3 className={s.h3}>Season</h3>
+            <select
+              className={s.selectT}
+              name="season"
+              onChange={(e) => handleChange(e)}
+            >
+              <option title="summer">Summer</option>
+              <option title="fall">Fall</option>
+              <option title="winter">Winter</option>
+              <option title="spring">Spring</option>
+            </select>
+            <span className={s.validT}>✔️</span>
+          </div>
 
-        <div>
-          <h3>Duration</h3>
-          <input
-            type="number"
-            id="duration"
-            name="durationA"
-            min="1"
-            max="60"
-            onChange={(e) => handleDuration(e)}
-          />
-          <select
-            id="duration"
-            name="durationB"
-            onChange={(e) => handleDuration(e)}
+          <div>
+            <h3 className={s.h3}>Duration</h3>
+            <input
+              className={errors.duration ? s.inputDurationF : s.inputDurationT}
+              type="number"
+              id="duration"
+              name="durationA"
+              min="1"
+              max="60"
+              onChange={(e) => handleDuration(e)}
+            />
+            <select
+              className={errors.duration ? s.selectF : s.selectT}
+              id="duration"
+              name="durationB"
+              onChange={(e) => handleDuration(e)}
+            >
+              <option>minutes</option>
+              <option>hours</option>
+              <option>days</option>
+              <option>weeks</option>
+            </select>
+            <span className={errors.duration ? s.validF : s.validT}>
+              {errors.duration ? errors.duration : "✔️"}
+            </span>
+          </div>
+
+          <div>
+            <h3 className={s.h3}>Difficulty</h3>
+            <input
+              className={s.slider}
+              type="range"
+              name="difficulty"
+              min="1"
+              max="5"
+              defaultValue={3}
+              onChange={(e) => handleChange(e)}
+            />
+            <span className={s.validT}>{state.difficulty}</span>
+          </div>
+
+          <button
+            className={Object.keys(errors).length ? s.btnF : s.btnT}
+            type="submit"
           >
-            <option>minutes</option>
-            <option>hours</option>
-            <option>days</option>
-            <option>weeks</option>
-          </select>
-          <span className={s.span}>
-            {errors.duration ? errors.duration : null}
-          </span>
+            Create activity
+          </button>
         </div>
 
-        <div>
-          <h3>Difficulty</h3>
-          <input
-            type="range"
-            name="difficulty"
-            min="1"
-            max="5"
-            defaultValue={3}
-            onChange={(e) => handleChange(e)}
-          />
-        </div>
-
-        <div>
-          <h3>Countries</h3>
-          <span className={s.span}>
-            {errors.countries ? errors.countries : null}
+        <div className={s.divCountries}>
+          <h3 className={s.h3Countries}>Countries</h3>
+          <span className={errors.countries ? s.valid2F : s.valid2T}>
+            {errors.countries ? errors.countries : "✔️"}
           </span>
 
-          <div className={s.optionsContainer}>
+          <div
+            className={
+              errors.countries ? s.optionsContainerF : s.optionsContainerT
+            }
+          >
             {allCountries && allCountries.length
               ? allCountries.map((el, index) => {
                   return (
@@ -191,13 +212,6 @@ export default function CreateActivity() {
               : "There is no countries"}
           </div>
         </div>
-
-        <button
-          type="submit"
-          disabled={Object.keys(errors).length ? true : false}
-        >
-          Create activity
-        </button>
       </form>
     </>
   );

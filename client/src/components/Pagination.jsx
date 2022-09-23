@@ -1,5 +1,7 @@
 import React from "react";
 
+import s from "./Pagination.module.css";
+
 export default function Pagination({
   totalPosts,
   postsPerPage,
@@ -12,10 +14,14 @@ export default function Pagination({
   }
 
   return (
-    <div>
+    <div className={s.container}>
       {pages.map((page, index) => {
         return (
-          <button key={index} onClick={() => setCurrentPage(page)}>
+          <button
+            className={s.btns}
+            key={index}
+            onClick={() => setCurrentPage(page)}
+          >
             {page}
           </button>
         );

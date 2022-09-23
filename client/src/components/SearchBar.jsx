@@ -1,8 +1,11 @@
 import React from "react";
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import { useDispatch } from "react-redux";
+
 import { searchCountry } from "../Redux/actions";
+
+import s from "./SearchBar.module.css";
 
 export default function SearchBar() {
   const dispatch = useDispatch();
@@ -18,18 +21,25 @@ export default function SearchBar() {
   };
 
   return (
-    <form>
+    <div className={s.div}>
       <input
         type="text"
+        className={s.input}
         autoFocus
+        placeholder="Argentina"
         onChange={(e) => {
           handleChange(e);
         }}
-      ></input>
-
-      <button onClick={(e) => handleClick(e)}>
-        <Link to="/home">Search</Link>
+      />
+      <button className={s.btn} onClick={(e) => handleClick(e)}>
+        <NavLink className={s.navLink} to="/home">
+          <img
+            src="https://cdn-icons-png.flaticon.com/512/3031/3031293.png"
+            alt="black magnifying glass"
+            className={s.img}
+          />
+        </NavLink>
       </button>
-    </form>
+    </div>
   );
 }

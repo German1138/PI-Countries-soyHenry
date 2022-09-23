@@ -7,6 +7,7 @@ const {
   getCountries,
   getCountryId,
   postActivities,
+  getSearchedCountry,
 } = require("../controllers/Countries.controller");
 
 const router = Router();
@@ -16,6 +17,7 @@ const router = Router();
 
 router.get("/countries", getCountries);
 router.get("/countries/:id", getCountryId);
+router.get("/countriesSearch", getSearchedCountry);
 
 router.post("/activities", postActivities);
 router.get("/activities", getActivities);

@@ -1,4 +1,5 @@
 const axios = require("axios");
+const { where } = require("sequelize");
 const { Country, Activity, CountryActivity } = require("../db");
 
 const getData = async () => {
@@ -47,20 +48,43 @@ const getData = async () => {
 const getCountries = async (req, res) => {
   if (req.query.state && req.query.state.length) {
     const aux = req.query.state;
+    console.log(aux);
     const selectedCountries = await Country.findAll({
       where: { continents: aux },
     });
     if (selectedCountries && selectedCountries.length) {
       res.status(200).send(selectedCountries);
     } else {
-      let selectedActivity = await Country.findAll({
-        include: { model: Activity, where: { name: aux } },
-      });
-      res.status(200).send(selectedActivity);
+      //el sig if else es para las activities
+      if (aux === "allAct") {
+        console.log("nani?");
+        let allActivities = await Country.findAll({
+          include: { model: Activity },
+        });
+        res.status(200).send(allActivities);
+      } else {
+        let selectedActivity = await Country.findAll({
+          include: { model: Activity, where: { name: aux } },
+        });
+        res.status(200).send(selectedActivity);
+      }
     }
-  } else if (req.query.name && req.query.name.length) {
-    try {
-      const name = req.query.name;
+  } else {
+    const allCountries = await getData();
+    res.status(200).send(allCountries);
+  }
+};
+//FILTRO (QUIZA) de ambos, continentes y actividades
+/* await Country.findAll({ where:{continents: aux},
+  include: { model: Activity, where: { name: aux } }, */
+
+const getSearchedCountry = async (req, res) => {
+  try {
+    const name = req.query.name;
+    console.log(name);
+    if (!name) {
+      res.status(404).send({ message: error.message });
+    } else {
       let countryFound = await axios
         .get(`https://restcountries.com/v3/name/${name}`)
         .then((response) =>
@@ -75,12 +99,9 @@ const getCountries = async (req, res) => {
         );
 
       countryFound && res.status(200).send(countryFound);
-    } catch (error) {
-      res.status(404).send({ message: error.message });
     }
-  } else {
-    const allCountries = await getData();
-    res.status(200).send(allCountries);
+  } catch (error) {
+    res.status(404).send({ message: "Country not found" });
   }
 };
 
@@ -135,26 +156,46 @@ const postActivities = async (req, res) => {
   try {
     const { name, difficulty, duration, season, countries } = req.body;
 
-    let newActivity = await Activity.create({
-      name,
-      difficulty,
-      duration,
-      season,
-    });
+    if (name && countries.length) {
+      console.log("entra copado");
+      let buscado = await Activity.findOne({
+        where: {
+          name: name,
+          difficulty: difficulty,
+          duration: duration,
+          season: season,
+        },
+      });
 
-    const dbCountries = await Country.findAll({
-      where: {
-        id: countries,
-      },
-    });
+      if (!buscado) {
+        let newActivity = await Activity.create({
+          name,
+          difficulty,
+          duration,
+          season,
+        });
 
-    console.log(dbCountries);
-    await newActivity.addCountry(dbCountries);
+        const dbCountries = await Country.findAll({
+          where: {
+            id: countries,
+          },
+        });
 
-    //await dbCountries.addActivity(newActivity);
+        //console.log(dbCountries);
+        await newActivity.addCountry(dbCountries);
+        //await dbCountries.addActivity(newActivity); no anda
 
-    res.send(newActivity);
+        res.status(201).send(newActivity);
+      } else {
+        console.log("actividad ya existe");
+        res.status(400).send({ message: "Activity already exist" });
+      }
+    } else {
+      console.log("nao nao amigao");
+      res.status(400).send({ message: "Bad request" });
+    }
   } catch (error) {
+    console.log("el catch");
     res.status(404).json(error);
   }
 };
@@ -164,4 +205,10 @@ const getActivities = async (req, res) => {
   res.status(200).send(dbActivities);
 };
 
-module.exports = { getCountries, getCountryId, postActivities, getActivities };
+module.exports = {
+  getCountries,
+  getCountryId,
+  postActivities,
+  getActivities,
+  getSearchedCountry,
+};

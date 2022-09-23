@@ -1,0 +1,46 @@
+.h1 {
+  margin-top: 75px;
+  /* background-color: #4cacbc; */
+  width: fit-content;
+  /* padding: 5px 15px; */
+  /* border-radius: 5px 15px; */
+  border-bottom: #4cacbc 5px solid;
+  font-size: 36px;
+  cursor: pointer;
+}
+
+.h3 {
+  background-color: #6cc4a1;
+  padding: 10px;
+  border-radius: 10px;
+}
+
+.form {
+  display: flex;
+  justify-content: center;
+  margin: 10px;
+}
+
+.select {
+  border: 2px solid #a0d995;
+  border-radius: 10px;
+  background-color: #a0d995;
+  margin: 0px 5px 0px 5px;
+  font-weight: bold;
+  padding: 10px;
+  cursor: pointer;
+}
+
+.select:hover {
+  border: 2px solid #6cc4a1;
+  text-shadow: 2px 2px 4px #6cc4a1;
+}
+
+.grid {
+  display: grid;
+  place-items: center;
+  grid-template-columns: 33% 33% 33%;
+  grid-template-rows: 25% 25% 25% 25%;
+
+  margin-top: 30px;
+}
