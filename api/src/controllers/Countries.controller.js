@@ -192,7 +192,7 @@ const postActivities = async (req, res) => {
       }
     } else {
       console.log("nao nao amigao");
-      res.status(400).send({ message: "Bad request" });
+      res.status(400).send({ message: "Error 400 bad request" });
     }
   } catch (error) {
     console.log("el catch");

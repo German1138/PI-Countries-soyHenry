@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useHistory } from "react-router-dom";
 
 import NavBar from "../components/NavBar";
 
@@ -11,8 +10,6 @@ import s from "./CreateActivity.module.css";
 export default function CreateActivity() {
   const allCountries = useSelector((state) => state.countries);
   const dispatch = useDispatch();
-
-  let history = useHistory();
 
   useEffect(() => {
     dispatch(getCountries({ sort: "asc", filter: "" }));
@@ -53,10 +50,19 @@ export default function CreateActivity() {
     console.log(errors);
     if (!Object.keys(errors).length) {
       console.table(state);
-      //window.alert("Activity created!");
+
       dispatch(createActivity(state));
       e.target.reset();
+      setState({
+        name: "",
+        season: "summer",
+        duration: "",
+        difficulty: 3,
+        countries: [],
+      });
+      setDur([, "minutes"]);
     } else {
+      console.log(errors);
       window.alert("Error! Invalid values");
     }
   };
@@ -75,7 +81,7 @@ export default function CreateActivity() {
     if (!state.name) errors.name = "Name is required!";
     if (
       state.name.length < 3 ||
-      state.name.length > 10 ||
+      state.name.length > 30 ||
       !patternOWords.test(state.name)
     )
       errors.name = "Invalid name!";

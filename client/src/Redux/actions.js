@@ -47,8 +47,8 @@ export const getActivities = () => {
   };
 };
 
-export const createActivity = async (payload) => {
-  let valido;
+export const createActivity = (payload) => {
+  /* let valido;
   let response = await axios
     .post("http://localhost:3001/activities", payload)
     .then((res) => {
@@ -65,7 +65,22 @@ export const createActivity = async (payload) => {
 
   valido
     ? window.alert("Activity created!")
-    : window.alert(response.response.data.message);
+    :  */
+
+  return async function (dispatch) {
+    try {
+      const response = await axios.post(
+        "http://localhost:3001/activities",
+        payload
+      );
+      window.alert("Activity created!");
+
+      return response;
+    } catch (error) {
+      console.log(error);
+      window.alert(error.response.data.message);
+    }
+  };
 
   /* return (dispatch) => {
     dispatch({ type: CREATE_ACTIVITY, payload: response });
