@@ -30,6 +30,7 @@ export default function SearchBar() {
         onChange={(e) => {
           handleChange(e);
         }}
+        onKeyDown={(e) => (e.key === "Enter" ? handleClick(e) : null)}
       />
       <button className={s.btn} onClick={(e) => handleClick(e)}>
         <NavLink className={s.navLink} to="/home">

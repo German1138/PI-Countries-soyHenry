@@ -29,13 +29,13 @@
 .img {
   border: #6cc4a1 3px solid;
 }
-ul {
+.ul {
   list-style-type: none;
   text-align: center;
   margin-bottom: 0;
   padding: 0;
 }
-li {
+.ul li {
   padding: 10px;
   margin: 10px;
   border-radius: 20px;

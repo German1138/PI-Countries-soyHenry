@@ -31,7 +31,7 @@ export default function DetailCountry() {
             alt={`Image of ${countryDetail.name}`}
             width="300px"
           />
-          <ul className={s.carac}>
+          <ul className={s.ul}>
             <li>ID: {countryDetail.id}</li>
             <li>Capital: {countryDetail.capital}</li>
             <li>Continents: {countryDetail.continents}</li>
@@ -49,7 +49,7 @@ export default function DetailCountry() {
                 return (
                   <div className={s.divActivity} key={index}>
                     <h3 className={s.h3}>{el.name}</h3>
-                    <ul>
+                    <ul className={s.ul}>
                       <li>Season: {el.season}</li>
                       <li>Duration: {el.duration}</li>
                       <li>Difficulty: {el.difficulty}</li>

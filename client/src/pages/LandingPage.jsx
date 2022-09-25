@@ -1,9 +1,24 @@
-import React from "react";
+import React, { useEffect } from "react";
+import { useDispatch } from "react-redux";
 import { NavLink } from "react-router-dom";
+import { getActivities, getCountries } from "../Redux/actions";
 
 import s from "./LandingPage.module.css";
 
 export default function LandingPage() {
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(
+      getCountries({
+        sort: "asc",
+        continent: "",
+        activity: "",
+      })
+    );
+    dispatch(getActivities());
+  }, []);
+
   return (
     <div className={s.container}>
       <img

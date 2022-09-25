@@ -12,7 +12,7 @@ export default function CreateActivity() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(getCountries({ sort: "asc", filter: "" }));
+    dispatch(getCountries({ sort: "asc", continent: "", activity: "" }));
   }, []);
 
   const [state, setState] = useState({
@@ -77,6 +77,7 @@ export default function CreateActivity() {
 
   const validationJS = (state, dur) => {
     const errors = {};
+    console.log(state);
 
     if (!state.name) errors.name = "Name is required!";
     if (
@@ -85,6 +86,8 @@ export default function CreateActivity() {
       !patternOWords.test(state.name)
     )
       errors.name = "Invalid name!";
+
+    if (!state.season) errors.season = "Select a season!";
 
     if (!dur[0]) errors.duration = "Duration is required!";
     if (dur[0] <= 0 || !patternONumbers.test(dur[0]))
@@ -100,7 +103,7 @@ export default function CreateActivity() {
     if (state.countries.length === 0)
       errors.countries = "Check at least one country!";
 
-    //console.log(errors);
+    console.log(errors);
     return errors;
   };
 
@@ -129,7 +132,7 @@ export default function CreateActivity() {
           <div>
             <h3 className={s.h3}>Season</h3>
             <select
-              className={s.selectT}
+              className={errors.season ? s.selectF : s.selectT}
               name="season"
               onChange={(e) => handleChange(e)}
             >
@@ -138,7 +141,9 @@ export default function CreateActivity() {
               <option title="winter">Winter</option>
               <option title="spring">Spring</option>
             </select>
-            <span className={s.validT}>✔️</span>
+            <span className={errors.season ? s.validF : s.validT}>
+              {errors.season ? errors.season : "✔️"}
+            </span>
           </div>
 
           <div>

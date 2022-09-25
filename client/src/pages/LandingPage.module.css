@@ -13,9 +13,12 @@
   font-weight: bolder;
   padding: 20px 40px;
   border-radius: 50px 30px;
-  background-color: #72acb7;
+  background-color: #4cacbc;
   color: white;
-  font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+.h1:hover {
+  background-color: #4498a7;
+  border: 2px #4cacbc solid;
 }
 
 .center {

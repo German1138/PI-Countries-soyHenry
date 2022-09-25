@@ -8,13 +8,21 @@ import s from "./NavBar.module.css";
 export default function NavBar() {
   return (
     <nav className={s.nav}>
-      <NavLink className={s.navLink} to="/home">
-        Home
-      </NavLink>
-      <NavLink className={s.navLink} to="/createActivity">
-        Create activity
-      </NavLink>
-      <SearchBar />
+      <ul className={s.ul}>
+        <li>
+          <NavLink className={s.navLink} to="/home">
+            Home
+          </NavLink>
+        </li>
+        <li>
+          <NavLink className={s.navLink} to="/createActivity">
+            Create activity
+          </NavLink>
+        </li>
+        <li className="searchBar">
+          <SearchBar />
+        </li>
+      </ul>
     </nav>
   );
 }

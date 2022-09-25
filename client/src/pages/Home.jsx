@@ -16,14 +16,17 @@ export default function Home() {
   const allCountries = useSelector((state) => state.countries);
   const allActivities = useSelector((state) => state.activities);
 
-  let [state, setState] = useState({ sort: "asc", filter: "" });
+  let [state, setState] = useState({
+    sort: "asc",
+    continent: "",
+    activity: "",
+  });
 
   const handleChange = (e) => {
     setState({ ...state, [e.target.name]: e.target.value });
   };
 
   useEffect(() => {
-    console.log(allCountries);
     dispatch(getCountries(state));
     setCurrentPage(1);
     dispatch(getActivities());
@@ -32,8 +35,8 @@ export default function Home() {
   const handleReset = (e) => {
     e.preventDefault();
     setCurrentPage(1);
-    setState({ sort: "", filter: "" });
-    dispatch(getCountries((state = { sort: "", filter: "" })));
+    setState({ sort: "", continent: "", activity: "" });
+    dispatch(getCountries((state = { sort: "", continent: "", activity: "" })));
     dispatch(getActivities());
   };
 
@@ -64,15 +67,16 @@ export default function Home() {
   return (
     <>
       <NavBar />
-
-      <h1
-        className={s.h1}
-        onClick={() => {
-          window.location.reload();
-        }}
-      >
-        Homepage
-      </h1>
+      <div className={s.divh1}>
+        <h1
+          className={s.h1}
+          onClick={() => {
+            window.location.reload();
+          }}
+        >
+          Homepage
+        </h1>
+      </div>
       <form
         className={s.form}
         onSubmit={(e) => {
@@ -99,7 +103,7 @@ export default function Home() {
 
         <select
           className={s.select}
-          name="filter"
+          name="continent"
           onChange={(e) => handleChange(e)}
         >
           <option value="">All continents</option>
@@ -114,7 +118,7 @@ export default function Home() {
 
         <select
           className={s.select}
-          name="filter"
+          name="activity"
           onChange={(e) => handleChange(e)}
         >
           <option value="">---</option>
@@ -138,9 +142,10 @@ export default function Home() {
         totalPosts={allCountries.length}
         postsPerPage={postsPerPage}
         setCurrentPage={setCurrentPage}
+        currentPage={currentPage}
       />
       <div className={s.grid}>
-        {currentPosts && currentPosts.length ? (
+        {/* {currentPosts && currentPosts.length ? (
           currentPosts.map((el, index) => {
             return (
               <Card
@@ -152,6 +157,27 @@ export default function Home() {
               />
             );
           })
+        ) : (
+          <h3 className={s.h3}>404 not found</h3>
+        )} */}
+
+        {/* CAMBIAR LO DE ABAJO A IFs y poner el caso de que sea array vacio */}
+        {currentPosts[0] !== "404 not found" ? (
+          currentPosts && currentPosts.length ? (
+            currentPosts.map((el, index) => {
+              return (
+                <Card
+                  key={index}
+                  id={el.id}
+                  name={el.name}
+                  image={el.image}
+                  continents={el.continents}
+                />
+              );
+            })
+          ) : (
+            <span className={s.loader}></span>
+          )
         ) : (
           <h3 className={s.h3}>404 not found</h3>
         )}

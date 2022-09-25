@@ -46,7 +46,51 @@ const getData = async () => {
 };
 
 const getCountries = async (req, res) => {
-  if (req.query.state && req.query.state.length) {
+  const { filter } = req.params;
+
+  const filters = filter.split("-");
+  const continent = filters[0];
+  const activity = filters[1];
+
+  if (continent && activity) {
+    console.log(!!continent, !continent, "los contienntes");
+    console.log(!!activity, !activity, "Activitieeees");
+    try {
+      let continentActivities = await Country.findAll({
+        where: { continents: continent },
+        include: { model: Activity, where: { name: activity } },
+      });
+
+      res.status(200).send(continentActivities);
+    } catch (error) {
+      res.status(404).send(error);
+    }
+  } else if (continent && continent.length) {
+    try {
+      const selectedContinent = await Country.findAll({
+        where: { continents: continent },
+      });
+
+      res.status(200).send(selectedContinent);
+    } catch (error) {
+      res.status(404).send(error);
+    }
+  } else if (activity && activity.length) {
+    try {
+      let selectedActivity = await Country.findAll({
+        include: { model: Activity, where: { name: activity } },
+      });
+
+      res.status(200).send(selectedActivity);
+    } catch (error) {
+      res.status(404).send(error);
+    }
+  } else {
+    const allCountries = await getData();
+    res.status(200).send(allCountries);
+  }
+
+  /* if (req.query.state && req.query.state.length) {
     const aux = req.query.state;
     console.log(aux);
     const selectedCountries = await Country.findAll({
@@ -72,11 +116,8 @@ const getCountries = async (req, res) => {
   } else {
     const allCountries = await getData();
     res.status(200).send(allCountries);
-  }
+  } */
 };
-//FILTRO (QUIZA) de ambos, continentes y actividades
-/* await Country.findAll({ where:{continents: aux},
-  include: { model: Activity, where: { name: aux } }, */
 
 const getSearchedCountry = async (req, res) => {
   try {
@@ -156,7 +197,7 @@ const postActivities = async (req, res) => {
   try {
     const { name, difficulty, duration, season, countries } = req.body;
 
-    if (name && countries.length) {
+    if (name && countries.length && difficulty && duration && season) {
       console.log("entra copado");
       let buscado = await Activity.findOne({
         where: {
