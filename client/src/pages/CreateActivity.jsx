@@ -12,7 +12,7 @@ export default function CreateActivity() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(getCountries({ sort: "asc", continent: "", activity: "" }));
+    dispatch(getCountries());
   }, []);
 
   const [state, setState] = useState({
@@ -77,7 +77,7 @@ export default function CreateActivity() {
 
   const validationJS = (state, dur) => {
     const errors = {};
-    console.log(state);
+    //console.log(state);
 
     if (!state.name) errors.name = "Name is required!";
     if (
@@ -103,7 +103,7 @@ export default function CreateActivity() {
     if (state.countries.length === 0)
       errors.countries = "Check at least one country!";
 
-    console.log(errors);
+    //console.log(errors);
     return errors;
   };
 

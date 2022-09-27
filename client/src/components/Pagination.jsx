@@ -22,9 +22,7 @@ export default function Pagination({
   }
 
   let showedPages;
-  if (pages.length === 1) {
-    console.log("xd");
-  }
+
   if (currentPage === pages[0] || currentPage === pages[1]) {
     showedPages = pages.slice(0, 5);
   } else if (
@@ -63,7 +61,7 @@ export default function Pagination({
       if (!Object.keys(errors).length) {
         console.log(state);
         state !== aux ? setCurrentPage(pages[state] - 1) : setCurrentPage(aux);
-        setState(0);
+        setState(1);
       } else {
         console.log(errors);
         window.alert("Error! Invalid values");
@@ -85,6 +83,7 @@ export default function Pagination({
       >
         Prev
       </button>
+
       <input
         className={!Object.keys(errors).length ? s.inputT : s.inputF}
         type="number"
@@ -95,6 +94,7 @@ export default function Pagination({
         onChange={(e) => handleChange(e)}
         onKeyDown={(e) => handleKeyDown(e)}
       />
+
       {showedPages.map((page, index) => {
         return (
           <button
@@ -106,6 +106,7 @@ export default function Pagination({
           </button>
         );
       })}
+
       <button
         className={s.PrevNext}
         onClick={() => {

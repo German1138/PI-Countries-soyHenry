@@ -50,7 +50,7 @@
   border: dashed 2px #ff2442;
   border-radius: 5px;
   margin: 0px 10px 0px 5px;
-  cursor: pointer;
+  cursor: text;
   padding: 5px;
   width: 56px;
   background-color: whitesmoke;
@@ -61,7 +61,7 @@
   border: solid 2px #6cc4a1;
   border-radius: 5px;
   margin: 0px 10px 0px 5px;
-  cursor: pointer;
+  cursor: text;
   padding: 5px;
   width: 56px;
   background-color: whitesmoke;

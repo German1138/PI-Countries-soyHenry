@@ -9,7 +9,7 @@ import s from "./SearchBar.module.css";
 
 export default function SearchBar() {
   const dispatch = useDispatch();
-  const [state, setState] = useState("");
+  const [state, setState] = useState("notacountry");
 
   const handleChange = (e) => {
     setState(e.target.value.toLowerCase());
@@ -18,6 +18,7 @@ export default function SearchBar() {
   const handleClick = (e) => {
     e.preventDefault();
     dispatch(searchCountry(state));
+    /* setState("notacountry"); */
   };
 
   return (
@@ -25,12 +26,11 @@ export default function SearchBar() {
       <input
         type="text"
         className={s.input}
-        autoFocus
         placeholder="Argentina"
         onChange={(e) => {
           handleChange(e);
         }}
-        onKeyDown={(e) => (e.key === "Enter" ? handleClick(e) : null)}
+        /* onKeyDown={(e) => (e.key === "Enter" ? handleClick(e) : null)} */
       />
       <button className={s.btn} onClick={(e) => handleClick(e)}>
         <NavLink className={s.navLink} to="/home">

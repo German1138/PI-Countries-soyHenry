@@ -9,13 +9,7 @@ export default function LandingPage() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(
-      getCountries({
-        sort: "asc",
-        continent: "",
-        activity: "",
-      })
-    );
+    dispatch(getCountries());
     dispatch(getActivities());
   }, []);
 

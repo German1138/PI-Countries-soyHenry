@@ -1,12 +1,22 @@
 import axios from "axios";
 
 export const GET_COUNTRIES = "GET_COUNTRIES";
+export const GET_FILTERED_COUNTRIES = "GET_FILTERED_COUNTRIES";
 export const GET_COUNTRY = "GET_COUNTRY";
 export const SEARCH_COUNTRY = "SEARCH_COUNTRY";
 export const GET_ACTIVITIES = "GET_ACTIVITIES";
 export const CREATE_ACTIVITY = "CREATE_ACTIVITY";
 
-export const getCountries = (
+export const getCountries = () => {
+  return async (dispatch) => {
+    axios
+      .get(`http://localhost:3001/countries`)
+      .then((response) => response.data)
+      .then((response) => dispatch({ type: GET_COUNTRIES, payload: response }));
+  };
+};
+
+export const getFilteredCountries = (
   state /* = { sort: "", continent: "", activity: "" } */
 ) => {
   return async (dispatch) => {
@@ -16,7 +26,13 @@ export const getCountries = (
       )
       .then((response) => response.data)
       .then((response) =>
-        dispatch({ type: GET_COUNTRIES, payload: { response, state } })
+        dispatch({
+          type: GET_FILTERED_COUNTRIES,
+          payload: { response, state },
+        })
+      )
+      .catch((err) =>
+        dispatch({ type: GET_COUNTRIES, payload: ["404 not found"] })
       );
   };
 };
@@ -54,25 +70,6 @@ export const getActivities = () => {
 };
 
 export const createActivity = (payload) => {
-  /* let valido;
-  let response = await axios
-    .post("http://localhost:3001/activities", payload)
-    .then((res) => {
-      console.log(res);
-      console.log("todo correcto");
-      valido = true;
-      return res;
-    })
-    .catch((err) => {
-      //window.alert(err.message);
-      valido = false;
-      return err;
-    });
-
-  valido
-    ? window.alert("Activity created!")
-    :  */
-
   return async function (dispatch) {
     try {
       const response = await axios.post(

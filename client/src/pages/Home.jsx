@@ -8,7 +8,11 @@ import Pagination from "../components/Pagination";
 
 import s from "./Home.module.css";
 
-import { getActivities, getCountries } from "../Redux/actions";
+import {
+  getActivities,
+  getCountries,
+  getFilteredCountries,
+} from "../Redux/actions";
 
 export default function Home() {
   const dispatch = useDispatch();
@@ -26,24 +30,25 @@ export default function Home() {
     setState({ ...state, [e.target.name]: e.target.value });
   };
 
+  /* useEffect(() => {
+    dispatch(getCountries());
+    dispatch(getActivities());
+  }, []); */
+
   useEffect(() => {
-    dispatch(getCountries(state));
+    dispatch(getFilteredCountries(state));
     setCurrentPage(1);
     dispatch(getActivities());
   }, [state]);
 
-  const handleReset = (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
+    e.target.reset();
     setCurrentPage(1);
-    setState({ sort: "", continent: "", activity: "" });
-    dispatch(getCountries((state = { sort: "", continent: "", activity: "" })));
+    setState({ sort: "asc", continent: "", activity: "" });
+    dispatch(getCountries());
     dispatch(getActivities());
   };
-
-  /* const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log("EL APPLY");
-  }; */
 
   const [currentPage, setCurrentPage] = useState(1);
   const [postsPerPage, setPostsPerPage] = useState(10);
@@ -57,12 +62,6 @@ export default function Home() {
     currentPage === 1 ? firstPostIndex : firstPostIndex - difference,
     lastPostIndex - difference
   );
-
-  /* useEffect(() => {
-    if (currentPage === 1) {
-      setPostsPerPage(9);
-    } else setPostsPerPage(10);
-  }, [currentPage]); */
 
   return (
     <>
@@ -95,8 +94,12 @@ export default function Home() {
         <select
           className={s.select}
           name="sort"
+          defaultValue=""
           onChange={(e) => handleChange(e)}
         >
+          <option disabled value="">
+            -- select a sort --
+          </option>
           <option value="most">Most population</option>
           <option value="least">Least population</option>
         </select>
@@ -119,9 +122,13 @@ export default function Home() {
         <select
           className={s.select}
           name="activity"
+          defaultValue=""
           onChange={(e) => handleChange(e)}
         >
-          <option value="">---</option>
+          <option disabled value="">
+            -- select an activity --
+          </option>
+          {/* <option value="">---</option> */}
           {allActivities?.map((el, index) => {
             return (
               <option key={index} value={el.name}>
@@ -130,10 +137,8 @@ export default function Home() {
             );
           })}
         </select>
-        {/* <button className={s.select} type="submit">
-          APPLY
-        </button> */}
-        <button className={s.select} onClick={(e) => handleReset(e)}>
+
+        <button className={s.select} onSubmit={(e) => handleSubmit(e)}>
           RESET
         </button>
       </form>
@@ -145,22 +150,6 @@ export default function Home() {
         currentPage={currentPage}
       />
       <div className={s.grid}>
-        {/* {currentPosts && currentPosts.length ? (
-          currentPosts.map((el, index) => {
-            return (
-              <Card
-                key={index}
-                id={el.id}
-                name={el.name}
-                image={el.image}
-                continents={el.continents}
-              />
-            );
-          })
-        ) : (
-          <h3 className={s.h3}>404 not found</h3>
-        )} */}
-
         {/* CAMBIAR LO DE ABAJO A IFs y poner el caso de que sea array vacio */}
         {currentPosts[0] !== "404 not found" ? (
           currentPosts && currentPosts.length ? (

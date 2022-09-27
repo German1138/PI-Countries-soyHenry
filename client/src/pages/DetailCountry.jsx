@@ -4,7 +4,7 @@ import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 
 import NavBar from "../components/NavBar";
-import { getCountry } from "../Redux/actions";
+import { getCountry, GET_COUNTRY } from "../Redux/actions";
 
 import s from "./DetailCountry.module.css";
 
@@ -17,6 +17,9 @@ export default function DetailCountry() {
 
   useEffect(() => {
     dispatch(getCountry(params.id));
+    return () => {
+      dispatch({ type: GET_COUNTRY, payload: [] });
+    };
   }, []);
 
   return (

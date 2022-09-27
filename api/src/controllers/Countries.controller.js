@@ -1,6 +1,5 @@
 const axios = require("axios");
-const { where } = require("sequelize");
-const { Country, Activity, CountryActivity } = require("../db");
+const { Country, Activity } = require("../db");
 
 const getData = async () => {
   const dbInfo = await Country.findAll();
@@ -46,6 +45,11 @@ const getData = async () => {
 };
 
 const getCountries = async (req, res) => {
+  const allCountries = await getData();
+  res.status(200).send(allCountries);
+};
+
+const getFilteredCountries = async (req, res) => {
   const { filter } = req.params;
 
   const filters = filter.split("-");
@@ -53,70 +57,37 @@ const getCountries = async (req, res) => {
   const activity = filters[1];
 
   if (continent && activity) {
-    console.log(!!continent, !continent, "los contienntes");
-    console.log(!!activity, !activity, "Activitieeees");
-    try {
-      let continentActivities = await Country.findAll({
-        where: { continents: continent },
-        include: { model: Activity, where: { name: activity } },
-      });
-
-      res.status(200).send(continentActivities);
-    } catch (error) {
-      res.status(404).send(error);
-    }
-  } else if (continent && continent.length) {
-    try {
-      const selectedContinent = await Country.findAll({
-        where: { continents: continent },
-      });
-
-      res.status(200).send(selectedContinent);
-    } catch (error) {
-      res.status(404).send(error);
-    }
-  } else if (activity && activity.length) {
-    try {
-      let selectedActivity = await Country.findAll({
-        include: { model: Activity, where: { name: activity } },
-      });
-
-      res.status(200).send(selectedActivity);
-    } catch (error) {
-      res.status(404).send(error);
-    }
-  } else {
-    const allCountries = await getData();
-    res.status(200).send(allCountries);
-  }
-
-  /* if (req.query.state && req.query.state.length) {
-    const aux = req.query.state;
-    console.log(aux);
-    const selectedCountries = await Country.findAll({
-      where: { continents: aux },
+    let continentActivities = await Country.findAll({
+      where: { continents: continent },
+      include: { model: Activity, where: { name: activity } },
     });
-    if (selectedCountries && selectedCountries.length) {
-      res.status(200).send(selectedCountries);
-    } else {
-      //el sig if else es para las activities
-      if (aux === "allAct") {
-        console.log("nani?");
-        let allActivities = await Country.findAll({
-          include: { model: Activity },
-        });
-        res.status(200).send(allActivities);
-      } else {
-        let selectedActivity = await Country.findAll({
-          include: { model: Activity, where: { name: aux } },
-        });
-        res.status(200).send(selectedActivity);
-      }
-    }
+
+    continentActivities.length
+      ? res.status(200).send(continentActivities)
+      : res.status(404).send({ message: "404 not found" });
+  } else if (continent && continent.length) {
+    const selectedContinent = await Country.findAll({
+      where: { continents: continent },
+    });
+
+    selectedContinent
+      ? res.status(200).send(selectedContinent)
+      : res.status(404).send(error);
+  } else if (activity && activity.length) {
+    let selectedActivity = await Country.findAll({
+      include: { model: Activity, where: { name: activity } },
+    });
+
+    selectedActivity
+      ? res.status(200).send(selectedActivity)
+      : res.status(404).send(error);
   } else {
     const allCountries = await getData();
-    res.status(200).send(allCountries);
-  } */
+
+    allCountries
+      ? res.status(200).send(allCountries)
+      : res.status(404).send(error);
+  }
 };
 
 const getSearchedCountry = async (req, res) => {
@@ -199,18 +170,19 @@ const postActivities = async (req, res) => {
 
     if (name && countries.length && difficulty && duration && season) {
       console.log("entra copado");
+      let aux = name.toLowerCase();
       let buscado = await Activity.findOne({
         where: {
-          name: name,
-          difficulty: difficulty,
+          name: name.toLowerCase(),
+          /* difficulty: difficulty,
           duration: duration,
-          season: season,
+          season: season, */
         },
       });
 
       if (!buscado) {
         let newActivity = await Activity.create({
-          name,
+          name: name.toLowerCase(),
           difficulty,
           duration,
           season,
@@ -246,10 +218,25 @@ const getActivities = async (req, res) => {
   res.status(200).send(dbActivities);
 };
 
+const deleteActivities = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    console.log(id);
+    Activity.destroy({ where: { id } });
+
+    res.sendStatus(204);
+  } catch (error) {
+    return res.status(500).send({ message: error.message });
+  }
+};
+
 module.exports = {
   getCountries,
   getCountryId,
   postActivities,
   getActivities,
   getSearchedCountry,
+  getFilteredCountries,
+  deleteActivities,
 };
