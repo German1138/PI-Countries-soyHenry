@@ -1,6 +1,8 @@
 const axios = require("axios");
 const { Country, Activity } = require("../db");
 
+const { Op } = require("sequelize");
+
 const getData = async () => {
   const dbInfo = await Country.findAll();
   if (dbInfo.length >= 250) {
@@ -93,6 +95,12 @@ const getFilteredCountries = async (req, res) => {
 const getSearchedCountry = async (req, res) => {
   try {
     const name = req.query.name;
+
+    /* let countryFound2 = await Country.findAll({
+      where: { population: { [Op.gt]: name } },
+    });
+    console.log(countryFound2, "xddd"); */
+
     console.log(name);
     if (!name) {
       res.status(404).send({ message: error.message });
@@ -224,6 +232,11 @@ const deleteActivities = async (req, res) => {
 
     console.log(id);
     Activity.destroy({ where: { id } });
+
+    /* let aux = await Activity.destroy({
+      where: { id },
+      include: { model: Country, where: { id: 'ARG' } },
+    }); */
 
     res.sendStatus(204);
   } catch (error) {

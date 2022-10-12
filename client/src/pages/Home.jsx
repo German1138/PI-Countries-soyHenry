@@ -5,6 +5,7 @@ import { useSelector, useDispatch } from "react-redux";
 import Card from "../components/Card";
 import NavBar from "../components/NavBar";
 import Pagination from "../components/Pagination";
+import SearchBar from "../components/SearchBar";
 
 import s from "./Home.module.css";
 
@@ -36,6 +37,9 @@ export default function Home() {
   }, []); */
 
   useEffect(() => {
+    if (!allCountries.length) {
+      dispatch(getCountries());
+    }
     dispatch(getFilteredCountries(state));
     setCurrentPage(1);
     dispatch(getActivities());
@@ -76,6 +80,7 @@ export default function Home() {
           Homepage
         </h1>
       </div>
+
       <form
         className={s.form}
         onSubmit={(e) => {
@@ -138,6 +143,10 @@ export default function Home() {
           })}
         </select>
 
+        <div className={s.SearchB}>
+          <SearchBar setCurrentPage={setCurrentPage} />
+        </div>
+
         <button className={s.select} onSubmit={(e) => handleSubmit(e)}>
           RESET
         </button>
@@ -150,7 +159,6 @@ export default function Home() {
         currentPage={currentPage}
       />
       <div className={s.grid}>
-        {/* CAMBIAR LO DE ABAJO A IFs y poner el caso de que sea array vacio */}
         {currentPosts[0] !== "404 not found" ? (
           currentPosts && currentPosts.length ? (
             currentPosts.map((el, index) => {

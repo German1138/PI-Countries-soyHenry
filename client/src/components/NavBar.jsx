@@ -5,7 +5,7 @@ import SearchBar from "./SearchBar";
 
 import s from "./NavBar.module.css";
 
-export default function NavBar() {
+export default function NavBar({ setCurrentPage }) {
   return (
     <nav className={s.nav}>
       <ul className={s.ul}>
@@ -19,9 +19,9 @@ export default function NavBar() {
             Create activity
           </NavLink>
         </li>
-        <li className="searchBar">
-          <SearchBar />
-        </li>
+        {/* <li className="searchBar">
+          <SearchBar setCurrentPage={setCurrentPage} />
+        </li> */}
       </ul>
     </nav>
   );

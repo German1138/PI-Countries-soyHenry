@@ -80,6 +80,8 @@ export default function CreateActivity() {
     //console.log(state);
 
     if (!state.name) errors.name = "Name is required!";
+    if (state.name.trim().length === 0) errors.name = "Name is required!";
+
     if (
       state.name.length < 3 ||
       state.name.length > 30 ||

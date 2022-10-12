@@ -2,10 +2,17 @@
   position: relative;
   padding: 0%;
   margin: 0;
+  background-image: url("https://cdn.unifiedcommerce.com/content/product/large/4005556132270_CAT_Export_TYP_300_RGB.jpg");
 }
 
 .nl {
   text-decoration: none;
+}
+
+.logo {
+  height: fit-content;
+  border-radius: 50px 30px;
+  background-color: #4cacbc;
 }
 
 .h1 {
@@ -16,9 +23,8 @@
   background-color: #4cacbc;
   color: white;
 }
-.h1:hover {
-  background-color: #4498a7;
-  border: 2px #4cacbc solid;
+.logo:hover {
+  border: 2px #4498a7 solid;
 }
 
 .center {

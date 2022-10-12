@@ -4,7 +4,7 @@ import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 
 import NavBar from "../components/NavBar";
-import { getCountry, GET_COUNTRY } from "../Redux/actions";
+import { deleteActivity, getCountry, GET_COUNTRY } from "../Redux/actions";
 
 import s from "./DetailCountry.module.css";
 
@@ -21,6 +21,13 @@ export default function DetailCountry() {
       dispatch({ type: GET_COUNTRY, payload: [] });
     };
   }, []);
+
+  const handleDelete = async (e, id) => {
+    e.preventDefault();
+
+    await dispatch(deleteActivity(id));
+    dispatch(getCountry(params.id));
+  };
 
   return (
     <>
@@ -51,6 +58,13 @@ export default function DetailCountry() {
               activities.map((el, index) => {
                 return (
                   <div className={s.divActivity} key={index}>
+                    {/* <button
+                      onClick={(e) => {
+                        handleDelete(e, el.id);
+                      }}
+                    >
+                      X
+                    </button> */}
                     <h3 className={s.h3}>{el.name}</h3>
                     <ul className={s.ul}>
                       <li>Season: {el.season}</li>

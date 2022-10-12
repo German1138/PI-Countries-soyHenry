@@ -7,18 +7,23 @@ import { searchCountry } from "../Redux/actions";
 
 import s from "./SearchBar.module.css";
 
-export default function SearchBar() {
+export default function SearchBar({ setCurrentPage }) {
   const dispatch = useDispatch();
-  const [state, setState] = useState("notacountry");
+  const [state, setState] = useState("");
 
   const handleChange = (e) => {
     setState(e.target.value.toLowerCase());
   };
 
   const handleClick = (e) => {
-    e.preventDefault();
-    dispatch(searchCountry(state));
-    /* setState("notacountry"); */
+    if (state.trim().length !== 0) {
+      e.preventDefault();
+      dispatch(searchCountry(state));
+      setCurrentPage(1);
+      setState("");
+    } else {
+      alert("Valor incorrecto");
+    }
   };
 
   return (
@@ -30,16 +35,15 @@ export default function SearchBar() {
         onChange={(e) => {
           handleChange(e);
         }}
-        /* onKeyDown={(e) => (e.key === "Enter" ? handleClick(e) : null)} */
       />
       <button className={s.btn} onClick={(e) => handleClick(e)}>
-        <NavLink className={s.navLink} to="/home">
-          <img
-            src="https://cdn-icons-png.flaticon.com/512/3031/3031293.png"
-            alt="black magnifying glass"
-            className={s.img}
-          />
-        </NavLink>
+        {/* <NavLink className={s.navLink} to="/home"> */}
+        <img
+          src="https://cdn-icons-png.flaticon.com/512/3031/3031293.png"
+          alt="black magnifying glass"
+          className={s.img}
+        />
+        {/*  </NavLink> */}
       </button>
     </div>
   );

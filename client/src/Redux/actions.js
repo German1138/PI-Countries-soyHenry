@@ -89,3 +89,14 @@ export const createActivity = (payload) => {
     dispatch({ type: CREATE_ACTIVITY, payload: response });
   }; */
 };
+
+export const deleteActivity = (payload) => {
+  return async function (dispatch) {
+    try {
+      await axios.delete(`http://localhost:3001/activities/${payload}`);
+    } catch (error) {
+      console.log(error);
+      window.alert(error.message);
+    }
+  };
+};
